@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login System with Web Search</title>
+    <title>Web Search</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,50 +12,22 @@
             padding: 20px;
         }
         #search-form {
-            display: none;
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-<h1>Login System</h1>
-
-<div id="login">
-    <h2>Login</h2>
-    <input type="text" id="username" placeholder="Username" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button onclick="login()">Login</button>
-    <p id="login-message"></p>
-</div>
+<h1>Web Search</h1>
 
 <div id="search-form">
-    <h2>Web Search</h2>
+    <h2>Search the Web</h2>
     <input type="text" id="search-query" placeholder="Search the web" required>
     <button onclick="searchWeb()">Search</button>
     <p id="search-results"></p>
 </div>
 
 <script>
-    async function login() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const response = await fetch('/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-        
-        const message = document.getElementById('login-message');
-        if (response.ok) {
-            message.textContent = "Login successful!";
-            document.getElementById('search-form').style.display = "block";
-            document.getElementById('login').style.display = "none";
-        } else {
-            message.textContent = "Invalid credentials. Please try again.";
-        }
-    }
-
     function searchWeb() {
         const query = document.getElementById('search-query').value;
         const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
