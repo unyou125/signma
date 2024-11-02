@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Page Viewer</title>
+    <title>Search Google</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,49 +14,23 @@
         #search-form {
             margin-bottom: 20px;
         }
-        #content {
-            border: 1px solid #ccc;
-            padding: 10px;
-            max-height: 500px; /* Adjust height as needed */
-            overflow: auto; /* Enable scrolling */
-        }
-        #error-message {
-            color: red;
-            display: none;
-        }
     </style>
 </head>
 <body>
 
-<h1>Web Page Viewer</h1>
+<h1>Search Google</h1>
 
 <div id="search-form">
-    <h2>Enter a URL</h2>
-    <input type="text" id="url-input" placeholder="Enter a URL" required>
-    <button onclick="loadURL()">Load URL</button>
+    <h2>Enter a Search Query</h2>
+    <input type="text" id="search-query" placeholder="What do you want to search for?" required>
+    <button onclick="searchGoogle()">Search</button>
 </div>
 
-<div id="content"></div>
-<p id="error-message">There was an error fetching the URL. Please try a different one.</p>
-
 <script>
-    async function loadURL() {
-        const urlInput = document.getElementById('url-input').value;
-        const url = urlInput.startsWith('http://') || urlInput.startsWith('https://') ? urlInput : 'http://' + urlInput;
-        
-        try {
-            const response = await fetch(`/fetch?url=${encodeURIComponent(url)}`);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const content = await response.text();
-            document.getElementById('content').innerHTML = content;
-            document.getElementById('error-message').style.display = 'none'; // Hide error message
-        } catch (error) {
-            console.error(error);
-            document.getElementById('error-message').style.display = 'block'; // Show error message
-            document.getElementById('content').innerHTML = ''; // Clear previous content
-        }
+    function searchGoogle() {
+        const query = document.getElementById('search-query').value;
+        const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        window.location.href = searchUrl; // Redirect to Google search
     }
 </script>
 
