@@ -1,26 +1,23 @@
-// app.js
-// ... (existing code)
-
-// Register Route
-app.post("/register", async (req, res) => {
+// Login Route
+app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-
-  // Check if the user already exists
-  const existingUser = await User.findOne({ username });
-  if (existingUser) {
-    return res.status(400).send("User already exists");
+  
+  // Check for "cook" credentials
+  if (username === "cook" && password === "cook") {
+    req.session.userId = "cook"; // You can store any identifier in the session
+    return res.send("Login successful");
   }
-
-  // Automatically register "skibidi" user
-  if (username === "skibidi" && password === "skibidi") {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, password: hashedPassword });
-    await user.save();
-    return res.status(201).send("User registered successfully");
+  
+  // For other users, check the database
+  try {
+    const user = await User.findOne({ username });
+    if (user && await bcrypt.compare(password, user.password)) {
+      req.session.userId = user._id;
+      return res.send("Login successful");
+    } else {
+      return res.status(401).send("Invalid credentials");
+    }
+  } catch (error) {
+    return res.status(500).send("Error logging in");
   }
-
-  // Default case (you may want to customize this behavior)
-  return res.status(400).send("Invalid registration data");
 });
-
-// ... (remaining code)
