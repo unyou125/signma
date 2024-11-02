@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Search</title>
+    <title>Web Page Viewer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,23 +28,24 @@
 </head>
 <body>
 
-<h1>Web Search</h1>
+<h1>Web Page Viewer</h1>
 
 <div id="search-form">
-    <h2>Search the Web</h2>
-    <input type="text" id="search-query" placeholder="Search the web" required>
-    <button onclick="searchWeb()">Search</button>
+    <h2>Enter a URL</h2>
+    <input type="text" id="url-input" placeholder="Enter a URL" required>
+    <button onclick="loadURL()">Load URL</button>
 </div>
 
 <div id="results">
-    <iframe id="search-results" src="" title="Search Results"></iframe>
+    <iframe id="page-viewer" src="" title="Page Viewer"></iframe>
 </div>
 
 <script>
-    function searchWeb() {
-        const query = document.getElementById('search-query').value;
-        const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-        document.getElementById('search-results').src = searchUrl; // Set the src of the iframe to the search URL
+    function loadURL() {
+        const urlInput = document.getElementById('url-input').value;
+        const url = urlInput.startsWith('http://') || urlInput.startsWith('https://') ? urlInput : 'http://' + urlInput;
+        
+        document.getElementById('page-viewer').src = url; // Set the src of the iframe to the URL
     }
 </script>
 
