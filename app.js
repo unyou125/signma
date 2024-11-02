@@ -1,23 +1,39 @@
-// Login Route
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        #search-form {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
 
-  // Check for hardcoded "cook" credentials
-  if (username === "cook" && password === "cook") {
-    req.session.userId = "cook"; // Store a session variable to indicate the user is logged in
-    return res.send("Login successful");
-  }
+<h1>Web Search</h1>
 
-  // For other users, check the database
-  try {
-    const user = await User.findOne({ username });
-    if (user && await bcrypt.compare(password, user.password)) {
-      req.session.userId = user._id; // Set the user ID in session
-      return res.send("Login successful");
-    } else {
-      return res.status(401).send("Invalid credentials");
+<div id="search-form">
+    <h2>Search the Web</h2>
+    <input type="text" id="search-query" placeholder="Search the web" required>
+    <button onclick="searchWeb()">Search</button>
+    <p id="search-results"></p>
+</div>
+
+<script>
+    function searchWeb() {
+        const query = document.getElementById('search-query').value;
+        const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        window.open(searchUrl, '_blank');
     }
-  } catch (error) {
-    return res.status(500).send("Error logging in");
-  }
-});
+</script>
+
+</body>
+</html>
