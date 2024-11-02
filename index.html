@@ -24,6 +24,10 @@
             height: 100%;
             border: none;
         }
+        #error-message {
+            color: red;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -37,8 +41,9 @@
 </div>
 
 <div id="results">
-    <iframe id="page-viewer" src="" title="Page Viewer"></iframe>
+    <iframe id="page-viewer" title="Page Viewer" onload="checkLoad()"></iframe>
 </div>
+<p id="error-message">This website cannot be displayed in an iframe. Please enter a different URL.</p>
 
 <script>
     function loadURL() {
@@ -46,6 +51,22 @@
         const url = urlInput.startsWith('http://') || urlInput.startsWith('https://') ? urlInput : 'http://' + urlInput;
         
         document.getElementById('page-viewer').src = url; // Set the src of the iframe to the URL
+        document.getElementById('error-message').style.display = 'none'; // Hide the error message
+    }
+
+    function checkLoad() {
+        const iframe = document.getElementById('page-viewer');
+        try {
+            // Attempt to access the iframe content
+            const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            if (iframeDocument.body.innerHTML === "") {
+                // If the body is empty, it likely means the site refused to load
+                document.getElementById('error-message').style.display = 'block';
+            }
+        } catch (e) {
+            // Catch the error if access to the iframe content is denied
+            document.getElementById('error-message').style.display = 'block';
+        }
     }
 </script>
 
