@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Google</title>
+    <title>Search DuckDuckGo</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,23 +14,62 @@
         #search-form {
             margin-bottom: 20px;
         }
+        #results {
+            margin-top: 20px;
+        }
+        .result-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
-<h1>Search Google</h1>
+<h1>Search DuckDuckGo</h1>
 
 <div id="search-form">
     <h2>Enter a Search Query</h2>
     <input type="text" id="search-query" placeholder="What do you want to search for?" required>
-    <button onclick="searchGoogle()">Search</button>
+    <button onclick="searchDuckDuckGo()">Search</button>
 </div>
 
+<div id="results"></div>
+
 <script>
-    function searchGoogle() {
+    async function searchDuckDuckGo() {
         const query = document.getElementById('search-query').value;
-        const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-        window.location.href = searchUrl; // Redirect to Google search
+        const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
+        
+        if (!response.ok) {
+            document.getElementById('results').innerHTML = 'Error fetching results. Please try again.';
+            return;
+        }
+        
+        const data = await response.json();
+        displayResults(data);
+    }
+
+    function displayResults(data) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = ''; // Clear previous results
+        
+        if (data.RelatedTopics.length === 0) {
+            resultsDiv.innerHTML = 'No results found.';
+            return;
+        }
+
+        data.RelatedTopics.forEach(topic => {
+            if (topic.Result) {
+                const resultItem = document.createElement('div');
+                resultItem.classList.add('result-item');
+                resultItem.innerHTML = `
+                    <h3>${topic.Text}</h3>
+                    <p>${topic.Result}</p>
+                `;
+                resultsDiv.appendChild(resultItem);
+            }
+        });
     }
 </script>
 
