@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Page Viewer with Proxy</title>
+    <title>Web Page Viewer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,15 +14,11 @@
         #search-form {
             margin-bottom: 20px;
         }
-        #results {
+        #content {
             border: 1px solid #ccc;
-            height: 500px; /* Adjust height as needed */
+            padding: 10px;
+            max-height: 500px; /* Adjust height as needed */
             overflow: auto; /* Enable scrolling */
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
         }
         #error-message {
             color: red;
@@ -40,30 +36,26 @@
     <button onclick="loadURL()">Load URL</button>
 </div>
 
-<div id="results">
-    <iframe id="page-viewer" title="Page Viewer" onload="checkLoad()"></iframe>
-</div>
-<p id="error-message">This website cannot be displayed in an iframe. Please enter a different URL.</p>
+<div id="content"></div>
+<p id="error-message">There was an error fetching the URL. Please try a different one.</p>
 
 <script>
-    function loadURL() {
+    async function loadURL() {
         const urlInput = document.getElementById('url-input').value;
         const url = urlInput.startsWith('http://') || urlInput.startsWith('https://') ? urlInput : 'http://' + urlInput;
-
-        // Set the iframe src to the proxy path with the URL as a query parameter
-        document.getElementById('page-viewer').src = `/proxy?url=${encodeURIComponent(url)}`;
-        document.getElementById('error-message').style.display = 'none'; // Hide the error message
-    }
-
-    function checkLoad() {
-        const iframe = document.getElementById('page-viewer');
+        
         try {
-            const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-            if (iframeDocument.body.innerHTML === "") {
-                document.getElementById('error-message').style.display = 'block';
+            const response = await fetch(`/fetch?url=${encodeURIComponent(url)}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        } catch (e) {
-            document.getElementById('error-message').style.display = 'block';
+            const content = await response.text();
+            document.getElementById('content').innerHTML = content;
+            document.getElementById('error-message').style.display = 'none'; // Hide error message
+        } catch (error) {
+            console.error(error);
+            document.getElementById('error-message').style.display = 'block'; // Show error message
+            document.getElementById('content').innerHTML = ''; // Clear previous content
         }
     }
 </script>
